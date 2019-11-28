@@ -66,7 +66,7 @@ def classifier(means, varianses, test_data, threshold):
         s2 = Gaussian_distribution(means[1], varianses[1], data)
         s = s1 / s2
         # print('pixel #'+str(counter)+' : ratio gaussian face/non-face : '+str(s)+' threshold : '+str(threshold))
-        if s >threshold:
+        if s >0.4*threshold:
             p.append(0)
         else:
             p.append(1)

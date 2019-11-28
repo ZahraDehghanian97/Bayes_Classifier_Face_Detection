@@ -3,6 +3,7 @@ import os
 import matplotlib.image as mpimg
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn import metrics
 
 
 def load_images(directory, flag):
@@ -65,7 +66,7 @@ def classifier(means, varianses, test_data, threshold):
         s2 = Gaussian_distribution(means[1], varianses[1], data)
         s = s1 / s2
         # print('pixel #'+str(counter)+' : ratio gaussian face/non-face : '+str(s)+' threshold : '+str(threshold))
-        if s > threshold:
+        if s >threshold:
             p.append(0)
         else:
             p.append(1)
@@ -116,7 +117,26 @@ def c(prior_face, prior_non_face, means, variances):
 
 
 def d(true_label, predicted_label):
-    confusion
+    confusion_matrix = [[0,0],[0,0]]
+    for i in range(len(true_label)):
+        confusion_matrix[int(true_label[i])][int(predicted_label[i])]+=1
+    print("confusion matrrix : "+str(confusion_matrix))
+
+def e(true_label, predicted_label):
+    true_label = np.array(true_label).astype(int)
+    predicted_label = np.array(predicted_label).astype(int)
+    fpr, tpr, thresholds = metrics.roc_curve(true_label, predicted_label, pos_label=0)
+    roc_auc = metrics.auc(fpr, tpr)
+    plt.figure()
+    lw = 2
+    plt.plot(fpr, tpr, color='darkorange',lw=lw, label='ROC curve (area = %0.2f)' % roc_auc)
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('Receiver operating characteristic example')
+    plt.legend(loc="lower right")
+    plt.show()
 
 
 train_data = load_images("D:/univesity/foqelisans/pattern_recognition/SPR_HW2/code/Q7/Dataset/Train/Images", True)
@@ -124,13 +144,17 @@ train_class = load_images("D:/univesity/foqelisans/pattern_recognition/SPR_HW2/c
 face, non_face = seprate(train_data, train_class)
 
 prior_face, prior_non_face = a()
-print("prior face class : " + str(prior_face))
-print("prior non-face class : " + str(prior_non_face))
+# print("prior face class : " + str(prior_face))
+# print("prior non-face class : " + str(prior_non_face))
 
 means, varianses = b()
-print("\nmean face class : " + str(means[0]) + " \nvar face class : " + str(varianses[0]))
-print("---------------\nmean non-face class : " + str(means[1]) + " \nvar non-face class : " + str(varianses[1]))
+# print("\nmean face class : " + str(means[0]) + " \nvar face class : " + str(varianses[0]))
+# print("---------------\nmean non-face class : " + str(means[1]) + " \nvar non-face class : " + str(varianses[1]))
 
 true_label, predicted_label = c(prior_face, prior_non_face, means, varianses)
 
-d(true_label, predicted_label)
+# d(true_label, predicted_label)
+
+
+
+e(true_label, predicted_label)
